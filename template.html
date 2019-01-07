@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset=utf-8 />
+	<title>Printing Paper</title>
+	<meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+	<link rel="stylesheet" type="text/css" href="./css//paper.css">
+	<script type="text/javascript" src="./js/jquery.min.js"></script>
+	<script type="text/javascript" src="./js/JsBarcode.min.js"></script>
+	<script type="text/javascript" src="./js/qrcode.min.js"></script>
+</head>
+<body>
+	<div id="paper_container" class="paper_container size_4_6">
+		<div class="paper_title">
+			<div class="title">U.S CERTIFICATE OF ORIGIN</div>
+			<div class="sub_title">FOR EXPORT TO ISRAEL</div>
+		</div>
+		<div id="paper_wrapper" class="paper_wrapper">
+			
+		</div>
+	</div>
+	<script type="text/javascript">
+		function updatePaperSize(size) {
+			$("#paper_container").removeAttr("class");
+			$("#paper_container").addClass("paper_wrapper " + size);
+		}
+		function updateComponents() {
+			$(".barcode1 svg").each(function(){
+				var id = $(this).attr('id');
+				JsBarcode("#"+id, id);
+			});
+
+			$(".barcode2 div").each(function(){
+				var id = $(this).attr('id');
+				var qrcode = new QRCode(id, {
+				    text: id,
+				    width: 128,
+				    height: 128,
+				    colorDark : "#000000",
+				    colorLight : "#ffffff",
+				    correctLevel : QRCode.CorrectLevel.H
+				});
+			})
+		}
+	</script>
+</body>
+</html>

@@ -1,0 +1,78 @@
+body {
+	margin: 0;
+}
+.container {
+	display: flex;
+	flex-direction: row;
+}
+.header {
+	position: relative;
+	padding: 20px;
+}
+.wrapper {
+	padding: 20px 40px;
+	display: flex;
+	justify-content: center;
+	background-color: #ccc;
+	min-width: 60%;
+	height: calc(100Vh - 40px);
+	overflow: auto;
+}
+#itemGroup {
+	border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 10px;
+    margin-top: 20px;
+}
+#itemGroup .item div {
+	margin-top: 4px;
+	margin-bottom: 4px;
+}
+.item div label {
+	font-size: 12px;
+}
+.buttonGroup {
+	width: 100%;
+	position: absolute;
+	bottom: 50px;
+	margin-left: -20px;
+	text-align: center;
+}
+#previewer {
+	border: none;
+}
+.item input[type="text"] {
+	width: 30px;
+	margin-right: 5px;
+}
+
+.item input[id*="item_data_"] {
+	width: 80%;
+}
+.item.barcode1 input[id*="item_data_"] {
+	width: 60%;
+}
+.item.barcode2 input[id*="item_data_"] {
+	width: 60%;
+}
+.item .form-error {
+	display: block;
+	font-size: 12px;
+	color: red;
+}
+.size_4_6 {
+	width: 4in;
+	height: 6in;
+}
+.size_8_12 {
+	width: 8.5in;
+	height: 12in;
+}
+.size_8_11 {
+	width: 8.5in;
+	height: 11in;
+}
+.size_4_3 {
+	width: 4in;
+	height: 3in;
+}

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset=utf-8 />
+	<title>Printing Paper</title>
+	<meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+	<link rel="stylesheet" type="text/css" href="./css/style.css">
+	<script type="text/javascript" src="./js/jquery.min.js"></script>
+	<script type="text/javascript" src="./js/jquery.form-validator.min.js"></script>
+</head>
+<body>
+	<div class="container">
+		<div class="header">
+			<form id="myform" name="myform">
+				<div class="formGroup">
+					<label>Size:</label>
+					<select id="paper_size" name="paper_size">
+						<option value="size_4_6">4*6</option>
+						<option value="size_8_12">8.5*12</option>
+						<option value="size_8_11">8.5*11</option>
+						<option value="size_4_3">4*3</option>
+					</select>
+				</div>
+				<div id="itemGroup">
+				</div>
+			</form>
+			<div class="buttonGroup">
+				<select id="new_item">
+					<option value="text">Add Text</option>
+					<option value="barcode_1">Add Barcode(1D)</option>
+					<option value="barcode_2">Add Barcode(2D)</option>
+					<option value="image">Add Image</option>
+				</select>
+				<button id="preview_btn" type="button">Preview</button>
+				<button id="print_btn" type="button">Print</button>
+			</div>
+		</div>
+		<div class="wrapper">
+			<iframe id="previewer" name="previewer" class="size_4_6" src="./template.html"></iframe>
+		</div>
+	</div>
+	<script type="text/javascript">
+		var items = 0;
+		$(document).ready(function() {
+			addNewText();
+			
+			$("#paper_size").on("change", function(){
+				updatePaperSize();
+			});
+			
+			$("#new_item").on("change", function(){
+				var type = $(this).val();
+				switch (type) {
+					case "text":
+						addNewText();
+						break;
+					case "image":
+						addNewImage();
+						break;
+					case "barcode_1":
+						addBarcode1();
+						break;
+					case "barcode_2":
+						addBarcode2();
+						break;
+				}
+				$.validate();
+			});
+
+			$("#preview_btn").on("click", function() {
+				var paper_html = "";
+				var size = $("#paper_size").val();
+				$("#previewer").removeAttr('class');
+				$("#previewer").addClass(size);
+
+				$("#itemGroup .item").each(function(index){
+					var obj = $(this)
+					if (obj.hasClass("text")) {
+						paper_html += printText(index, obj);
+					} else if(obj.hasClass("barcode1")) {
+						paper_html += printBarcode(index, obj);
+					} else if(obj.hasClass("barcode2")) {
+						paper_html += printBarcode2(index, obj);
+					}
+					
+				});
+
+				$("#previewer").contents().find(".paper_wrapper").append(paper_html);
+				document.getElementById("previewer").contentWindow.updateComponents();
+			});
+
+			$("#print_btn").on("click", function(){
+				window.frames["previewer"].focus();
+				window.frames["previewer"].print();
+			})
+		});
+
+		function updatePaperSize() {
+			var size = $("#paper_size").val();
+			$("#previewer").removeAttr('class');
+			$("#previewer").addClass(size);
+			document.getElementById("previewer").contentWindow.updatePaperSize(size);
+		}
+
+		function addNewText() {
+			var item_html = "<div class='item text'>";
+			item_html += "<div><label>Font:</label>";
+			item_html += "<select id='item_font_"+items+"' name='item_font_"+items+"'>";
+			item_html += "<option value='Arial'>Arial</option>";
+			item_html += "<option value='Helvetica'>Helvetica</option>";
+			item_html += "<option value='Times New Roman'>Times New Roman</option>";
+			item_html += "<option value='Times'>Times</option>";
+			item_html += "<option value='Courier New'>Courier New</option>";
+			item_html += "<option value='Courier'>Courier</option>";
+			item_html += "</select></div>";
+			item_html += "<div><label>Font Size:</label>";
+			item_html += "<input type='text' id='item_fontSize_"+items+"' name='item_fontSize_"+items+"' data-validation='number' data-validation-allowing='range[8;50]' />";
+			item_html += "<label>Row:</label>";
+			item_html += "<input type='text' name='item_row_"+items+"' id='item_row_"+items+"' data-validation='number' data-validation-allowing='range[0;100]' />";
+			item_html += "<label>Col:</label>";
+			item_html += "<input type='text' name='item_col_"+items+"' id='item_col_"+items+"' data-validation='number' data-validation-allowing='range[0;100]' /></div>";
+			item_html += "<div><label>Text:</label><input id='item_data_"+items+"' name='item_data_"+items+"' /></div>"
+			item_html += "<hr></div>";
+			$("#itemGroup").append($(item_html));
+			items++;
+		}
+
+		function addNewImage() {
+			var item_html = "<div class='item image'>";
+			item_html += "<div><label>Row:</label>";
+			item_html += "<input type='text' name='item_row_"+items+"' id='item_row_"+items+"' data-validation='number' data-validation-allowing='range[0;100]' />";
+			item_html += "<label>Col:</label>";
+			item_html += "<input type='text' name='item_col_"+items+"' id='item_col_"+items+"' data-validation='number' data-validation-allowing='range[0;100]' /></div>";
+			item_html += "<div><label>File:</label>";
+			item_html += "<input type='file' id='item_data_"+items+"' name='item_data_"+items+"' data-validation='required' /></div>";
+			item_html += "<hr></div>";
+			$("#itemGroup").append($(item_html));
+			items++;
+		}
+
+		function addBarcode1() {
+			var item_html = "<div class='item barcode1'>";
+			item_html += "<div><label>Row:</label>";
+			item_html += "<input type='text' name='item_row_"+items+"' id='item_row_"+items+"' data-validation='number' data-validation-allowing='range[0;100]' />";
+			item_html += "<label>Col:</label>";
+			item_html += "<input type='text' name='item_col_"+items+"' id='item_col_"+items+"' data-validation='number' data-validation-allowing='range[0;100]' /></div>";
+			item_html += "<div><label>Barcode Value:</label>";
+			item_html += "<input type='text' id='item_data_"+items+"' name='item_data_"+items+"' data-validation='required' /></div>";
+			item_html += "<hr></div>";
+			$("#itemGroup").append($(item_html));
+			items++;
+		}
+
+		function addBarcode2() {
+			var item_html = "<div class='item barcode2'>";
+			item_html += "<div><label>Row:</label>";
+			item_html += "<input type='text' name='item_row_"+items+"' id='item_row_"+items+"' data-validation='number' data-validation-allowing='range[0;100]' />";
+			item_html += "<label>Col:</label>";
+			item_html += "<input type='text' name='item_col_"+items+"' id='item_col_"+items+"' data-validation='number' data-validation-allowing='range[0;100]' /></div>";
+			item_html += "<div><label>Barcode Value:</label>";
+			item_html += "<input type='text' id='item_data_"+items+"' name='item_data_"+items+"' data-validation='required' /></div>";
+			item_html += "<hr></div>";
+			$("#itemGroup").append($(item_html));
+			items++;
+		}
+
+		function printText(index, item) {
+
+			var font = $("#item_font_"+index).val();
+			var fontSize = $("#item_fontSize_"+index).val();
+			var nRow = $("#item_row_"+index).val();
+			var nColumn = $("#item_col_"+index).val();
+			var cData = $("#item_data_"+index).val();
+
+			var style = "position: absolute; font-family: '"+font+"'; font-size: "+fontSize+"px; top: "+nRow+"%; left: "+nColumn+"%;";
+			var field_html = '<div style="'+style+'">'+cData+'</div>';
+			return field_html;
+		}
+
+		function printBarcode(index, item) {
+			var nRow = $("#item_row_"+index).val();
+			var nColumn = $("#item_col_"+index).val();
+			var cData = $("#item_data_"+index).val();
+			var style = "position: absolute; top: "+nRow+"%; left: "+nColumn+"%;";
+			var field_html = '<div style="'+style+'" class="barcode1" data="'+cData+'"><svg id="'+cData+'"></svg></div>';
+			return field_html;
+		}
+
+		function printBarcode2(index, item) {
+			var nRow = $("#item_row_"+index).val();
+			var nColumn = $("#item_col_"+index).val();
+			var cData = $("#item_data_"+index).val();
+			var style = "position: absolute; top: "+nRow+"%; left: "+nColumn+"%;";
+			var field_html = '<div style="'+style+'" class="barcode2" data="'+cData+'"><div id="'+cData+'"></div></div>';
+			return field_html;
+		}
+	</script>
+</body>
+</html>
