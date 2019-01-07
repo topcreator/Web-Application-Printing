@@ -85,7 +85,7 @@
 					}
 					
 				});
-				$("#previewer").contents().find(".paper_wrapper").html("");
+				$("#previewer").contents().find(".added-item").remove();
 				$("#previewer").contents().find(".paper_wrapper").append(paper_html);
 				document.getElementById("previewer").contentWindow.updateComponents();
 			});
@@ -193,7 +193,7 @@
 			var nHeight = $("#item_height_"+index).val();
 
 			var style = "position: absolute; font-family: '"+font+"'; font-size: "+fontSize+"px; top: "+nRow+"%; left: "+nColumn+"%; width: "+nWidth+"px; height: "+nHeight+"px;";
-			var field_html = '<div class="text-div" style="'+style+'">'+cData+'</div>';
+			var field_html = '<div class="added-item text-div" style="'+style+'">'+cData+'</div>';
 			return field_html;
 		}
 
@@ -207,7 +207,7 @@
 
 			var style = "position: absolute; top: "+nRow+"%; left: "+nColumn+"%;";
 			var svgStyle = "width: "+nWidth+"px; height: "+ nHeight+"px;";
-			var field_html = '<div style="'+style+'" class="barcode1" data="'+cData+'"><svg id="'+cData+'" style="'+svgStyle+'"></svg></div>';
+			var field_html = '<div style="'+style+'" class="added-item barcode1" data="'+cData+'"><svg id="item_barcode1_'+index+'" data-value="'+cData+'" style="'+svgStyle+'"></svg></div>';
 			return field_html;
 		}
 
@@ -220,7 +220,7 @@
 			var nHeight = $("#item_height_"+index).val();
 
 			var style = "position: absolute; top: "+nRow+"%; left: "+nColumn+"%;";
-			var field_html = '<div style="'+style+'" class="barcode2" data="'+cData+'"><div id="'+cData+'" data-width="'+nWidth+'" data-height="'+nHeight+'"></div></div>';
+			var field_html = '<div style="'+style+'" class="added-item barcode2" data="'+cData+'"><div id="item_barcode2_'+index+'" data-value="'+cData+'" data-width="'+nWidth+'" data-height="'+nHeight+'"></div></div>';
 			return field_html;
 		}
 	</script>

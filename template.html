@@ -22,20 +22,22 @@
 	<script type="text/javascript">
 		function updatePaperSize(size) {
 			$("#paper_container").removeAttr("class");
-			$("#paper_container").addClass("paper_wrapper " + size);
+			$("#paper_container").addClass("paper_container " + size);
 		}
 		function updateComponents() {
 			$(".barcode1 svg").each(function(){
 				var id = $(this).attr('id');
-				JsBarcode("#"+id, id);
+				var value = $(this).data('value');
+				JsBarcode("#"+id, value);
 			});
 
 			$(".barcode2 div").each(function(){
 				var id = $(this).attr('id');
+				var value = $(this).data('value');
 				var width = parseInt($(this).data('width'));
 				var height = parseInt($(this).data('height'));
 				var qrcode = new QRCode(id, {
-				    text: id,
+				    text: value,
 				    width: width,
 				    height: height,
 				    colorDark : "#000000",
