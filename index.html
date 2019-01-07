@@ -21,19 +21,20 @@
 						<option value="size_4_3">4*3</option>
 					</select>
 				</div>
+				<div class="buttonGroup">
+					<select id="new_item">
+						<option value="text">Add Text</option>
+						<option value="barcode_1">Add Barcode(1D)</option>
+						<option value="barcode_2">Add Barcode(2D)</option>
+						<option value="image">Add Image</option>
+					</select>
+					<button id="preview_btn" type="button">Preview</button>
+					<button id="print_btn" type="button">Print</button>
+				</div>
 				<div id="itemGroup">
 				</div>
 			</form>
-			<div class="buttonGroup">
-				<select id="new_item">
-					<option value="text">Add Text</option>
-					<option value="barcode_1">Add Barcode(1D)</option>
-					<option value="barcode_2">Add Barcode(2D)</option>
-					<option value="image">Add Image</option>
-				</select>
-				<button id="preview_btn" type="button">Preview</button>
-				<button id="print_btn" type="button">Print</button>
-			</div>
+			
 		</div>
 		<div class="wrapper">
 			<iframe id="previewer" name="previewer" class="size_4_6" src="./template.html"></iframe>
@@ -47,7 +48,7 @@
 			$("#paper_size").on("change", function(){
 				updatePaperSize();
 			});
-			
+
 			$("#new_item").on("change", function(){
 				var type = $(this).val();
 				switch (type) {
