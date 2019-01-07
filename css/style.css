@@ -11,8 +11,7 @@ body {
 }
 .wrapper {
 	padding: 20px 40px;
-	display: flex;
-	justify-content: center;
+	text-align: center;
 	background-color: #ccc;
 	min-width: 60%;
 	height: calc(100Vh - 40px);
