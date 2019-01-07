@@ -85,7 +85,7 @@
 					}
 					
 				});
-
+				$("#previewer").contents().find(".paper_wrapper").html("");
 				$("#previewer").contents().find(".paper_wrapper").append(paper_html);
 				document.getElementById("previewer").contentWindow.updateComponents();
 			});
@@ -120,8 +120,12 @@
 			item_html += "<input type='text' name='item_row_"+items+"' id='item_row_"+items+"' data-validation='number' data-validation-allowing='range[0;100]' />";
 			item_html += "<label>Col:</label>";
 			item_html += "<input type='text' name='item_col_"+items+"' id='item_col_"+items+"' data-validation='number' data-validation-allowing='range[0;100]' /></div>";
+			item_html += "<div><label>Width:</label>";
+			item_html += "<input type='text' name='item_width_"+items+"' id='item_width_"+items+"' data-validation='number' />";
+			item_html += "<label>Height:</label>";
+			item_html += "<input type='text' name='item_height_"+items+"' id='item_height_"+items+"' data-validation='number' /></div>";
 			item_html += "<div><label>Text:</label><input id='item_data_"+items+"' name='item_data_"+items+"' /></div>"
-			item_html += "<hr></div>";
+			item_html += "</div><hr>";
 			$("#itemGroup").append($(item_html));
 			items++;
 		}
@@ -132,9 +136,13 @@
 			item_html += "<input type='text' name='item_row_"+items+"' id='item_row_"+items+"' data-validation='number' data-validation-allowing='range[0;100]' />";
 			item_html += "<label>Col:</label>";
 			item_html += "<input type='text' name='item_col_"+items+"' id='item_col_"+items+"' data-validation='number' data-validation-allowing='range[0;100]' /></div>";
+			item_html += "<div><label>Width:</label>";
+			item_html += "<input type='text' name='item_width_"+items+"' id='item_width_"+items+"' data-validation='number' />";
+			item_html += "<label>Height:</label>";
+			item_html += "<input type='text' name='item_height_"+items+"' id='item_height_"+items+"' data-validation='number' /></div>";
 			item_html += "<div><label>File:</label>";
 			item_html += "<input type='file' id='item_data_"+items+"' name='item_data_"+items+"' data-validation='required' /></div>";
-			item_html += "<hr></div>";
+			item_html += "</div><hr>";
 			$("#itemGroup").append($(item_html));
 			items++;
 		}
@@ -145,9 +153,13 @@
 			item_html += "<input type='text' name='item_row_"+items+"' id='item_row_"+items+"' data-validation='number' data-validation-allowing='range[0;100]' />";
 			item_html += "<label>Col:</label>";
 			item_html += "<input type='text' name='item_col_"+items+"' id='item_col_"+items+"' data-validation='number' data-validation-allowing='range[0;100]' /></div>";
+			item_html += "<div><label>Width:</label>";
+			item_html += "<input type='text' name='item_width_"+items+"' id='item_width_"+items+"' data-validation='number' />";
+			item_html += "<label>Height:</label>";
+			item_html += "<input type='text' name='item_height_"+items+"' id='item_height_"+items+"' data-validation='number' /></div>";
 			item_html += "<div><label>Barcode Value:</label>";
 			item_html += "<input type='text' id='item_data_"+items+"' name='item_data_"+items+"' data-validation='required' /></div>";
-			item_html += "<hr></div>";
+			item_html += "</div><hr>";
 			$("#itemGroup").append($(item_html));
 			items++;
 		}
@@ -158,9 +170,13 @@
 			item_html += "<input type='text' name='item_row_"+items+"' id='item_row_"+items+"' data-validation='number' data-validation-allowing='range[0;100]' />";
 			item_html += "<label>Col:</label>";
 			item_html += "<input type='text' name='item_col_"+items+"' id='item_col_"+items+"' data-validation='number' data-validation-allowing='range[0;100]' /></div>";
+			item_html += "<div><label>Width:</label>";
+			item_html += "<input type='text' name='item_width_"+items+"' id='item_width_"+items+"' data-validation='number' />";
+			item_html += "<label>Height:</label>";
+			item_html += "<input type='text' name='item_height_"+items+"' id='item_height_"+items+"' data-validation='number' /></div>";
 			item_html += "<div><label>Barcode Value:</label>";
 			item_html += "<input type='text' id='item_data_"+items+"' name='item_data_"+items+"' data-validation='required' /></div>";
-			item_html += "<hr></div>";
+			item_html += "</div><hr>";
 			$("#itemGroup").append($(item_html));
 			items++;
 		}
@@ -172,9 +188,12 @@
 			var nRow = $("#item_row_"+index).val();
 			var nColumn = $("#item_col_"+index).val();
 			var cData = $("#item_data_"+index).val();
+			if(!cData) return "";
+			var nWidth = $("#item_width_"+index).val();
+			var nHeight = $("#item_height_"+index).val();
 
-			var style = "position: absolute; font-family: '"+font+"'; font-size: "+fontSize+"px; top: "+nRow+"%; left: "+nColumn+"%;";
-			var field_html = '<div style="'+style+'">'+cData+'</div>';
+			var style = "position: absolute; font-family: '"+font+"'; font-size: "+fontSize+"px; top: "+nRow+"%; left: "+nColumn+"%; width: "+nWidth+"px; height: "+nHeight+"px;";
+			var field_html = '<div class="text-div" style="'+style+'">'+cData+'</div>';
 			return field_html;
 		}
 
@@ -182,8 +201,13 @@
 			var nRow = $("#item_row_"+index).val();
 			var nColumn = $("#item_col_"+index).val();
 			var cData = $("#item_data_"+index).val();
+			if(!cData) return "";
+			var nWidth = $("#item_width_"+index).val();
+			var nHeight = $("#item_height_"+index).val();
+
 			var style = "position: absolute; top: "+nRow+"%; left: "+nColumn+"%;";
-			var field_html = '<div style="'+style+'" class="barcode1" data="'+cData+'"><svg id="'+cData+'"></svg></div>';
+			var svgStyle = "width: "+nWidth+"px; height: "+ nHeight+"px;";
+			var field_html = '<div style="'+style+'" class="barcode1" data="'+cData+'"><svg id="'+cData+'" style="'+svgStyle+'"></svg></div>';
 			return field_html;
 		}
 
@@ -191,8 +215,12 @@
 			var nRow = $("#item_row_"+index).val();
 			var nColumn = $("#item_col_"+index).val();
 			var cData = $("#item_data_"+index).val();
+			if(!cData) return "";
+			var nWidth = $("#item_width_"+index).val();
+			var nHeight = $("#item_height_"+index).val();
+
 			var style = "position: absolute; top: "+nRow+"%; left: "+nColumn+"%;";
-			var field_html = '<div style="'+style+'" class="barcode2" data="'+cData+'"><div id="'+cData+'"></div></div>';
+			var field_html = '<div style="'+style+'" class="barcode2" data="'+cData+'"><div id="'+cData+'" data-width="'+nWidth+'" data-height="'+nHeight+'"></div></div>';
 			return field_html;
 		}
 	</script>

@@ -38,3 +38,6 @@ body {
 	flex-direction: column;
 	justify-content: center;
 }
+.text-div {
+	word-wrap: break-word;
+}
