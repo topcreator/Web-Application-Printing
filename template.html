@@ -11,12 +11,13 @@
 </head>
 <body>
 	<div id="paper_container" class="paper_container size_4_6">
-		<!--div class="paper_title">
-			<div class="title">U.S CERTIFICATE OF ORIGIN</div>
-			<div class="sub_title">FOR EXPORT TO ISRAEL</div>
-		</div-->
+		<div class="paper_header">
+			<span class="title"></span>
+		</div>
 		<div id="paper_wrapper" class="paper_wrapper">
-			
+		</div>
+		<div class="paper_footer">
+			<span class="title"></span>
 		</div>
 	</div>
 	<script type="text/javascript">
@@ -25,6 +26,26 @@
 			$("#paper_container").addClass("paper_container " + size);
 		}
 		function updateComponents() {
+			$(".text-data").each(function(){
+				var datas = $(this).data('value');
+				var header = datas.header;
+				var footer = datas.footer;
+				var data = datas.data;
+				$(".paper_header .title").html(header);
+				$(".paper_footer .title").html(footer);
+				var n = data.length;
+				for (var i = 0; i < n; i++) {
+					var oFont = data[i].oFont;
+					var nRow = data[i].nRow;
+					var nColumn = data[i].nColumn;
+					var cData = data[i].cData;
+
+					var style = "position: absolute; top: "+nRow+"%; left: "+nColumn+"%; font: "+oFont+";";
+					var field_html = "<div class='added-item text-div' style='"+style+"'>"+cData+"</div>";
+					$(".paper_wrapper").append(field_html);
+				}
+			});
+
 			$(".barcode1 svg").each(function(){
 				var id = $(this).attr('id');
 				var value = $(this).data('value');

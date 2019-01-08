@@ -42,6 +42,7 @@
 	</div>
 	<script type="text/javascript">
 		var items = 0;
+		var passingData = '{"header":"U.S CERTIFICATE OF ORIGIN","data":[{"oFont":"12px arial", "nRow":0,"nColumn":0, "cData":"Text-12(0,0)"}, {"oFont":"14px arial", "nRow":25, "nColumn":25, "cData":"Text-14(25,25)"}, {"oFont":"16px arial", "nRow":50, "nColumn":50, "cData":"Text-16(50,50)"}, {"oFont":"18px arial", "nRow":75, "nColumn":75, "cData":"Text-18(75,75)"}], "footer":"X-PORT FORMS 1-(800) 345-1996"}';
 		$(document).ready(function() {
 			addNewText();
 			
@@ -103,6 +104,21 @@
 			document.getElementById("previewer").contentWindow.updatePaperSize(size);
 		}
 
+		function addHeaderText() {
+			var item_html = "<div class='header-text'>";
+			item_html += "<div><label>Header:</label>";
+			item_html += "<input type='text' id='item_header' name='item_header' data-validation='required' /></div>";
+			item_html += "</div><hr>";
+			$("#itemGroup").append($(item_html));
+		}
+
+		function addFooterText() {
+			var item_html = "<div class='footer-text'>";
+			item_html += "<div><label>Footer:</label>";
+			item_html += "<input type='text' id='item_footer' name='item_footer' data-validation='required' /></div>";
+			item_html += "</div><hr>";
+			$("#itemGroup").append($(item_html));
+		}
 		function addNewText() {
 			var item_html = "<div class='item text'>";
 			item_html += "<div><label>Font:</label>";
@@ -114,17 +130,8 @@
 			item_html += "<option value='Courier New'>Courier New</option>";
 			item_html += "<option value='Courier'>Courier</option>";
 			item_html += "</select></div>";
-			item_html += "<div><label>Font Size:</label>";
-			item_html += "<input type='text' id='item_fontSize_"+items+"' name='item_fontSize_"+items+"' data-validation='number' data-validation-allowing='range[8;50]' />";
-			item_html += "<label>Row:</label>";
-			item_html += "<input type='text' name='item_row_"+items+"' id='item_row_"+items+"' data-validation='number' data-validation-allowing='range[0;100]' />";
-			item_html += "<label>Col:</label>";
-			item_html += "<input type='text' name='item_col_"+items+"' id='item_col_"+items+"' data-validation='number' data-validation-allowing='range[0;100]' /></div>";
-			item_html += "<div><label>Width:</label>";
-			item_html += "<input type='text' name='item_width_"+items+"' id='item_width_"+items+"' data-validation='number' />";
-			item_html += "<label>Height:</label>";
-			item_html += "<input type='text' name='item_height_"+items+"' id='item_height_"+items+"' data-validation='number' /></div>";
-			item_html += "<div><label>Text:</label><input id='item_data_"+items+"' name='item_data_"+items+"' /></div>"
+			item_html += "<div><label>Data:</label></div>";
+			item_html += "<div><textarea id='item_data_"+items+"' name='item_data_"+items+"' rows='20'>"+passingData+"</textarea></div>"
 			item_html += "</div><hr>";
 			$("#itemGroup").append($(item_html));
 			items++;
@@ -182,18 +189,11 @@
 		}
 
 		function printText(index, item) {
-
-			var font = $("#item_font_"+index).val();
-			var fontSize = $("#item_fontSize_"+index).val();
-			var nRow = $("#item_row_"+index).val();
-			var nColumn = $("#item_col_"+index).val();
 			var cData = $("#item_data_"+index).val();
 			if(!cData) return "";
-			var nWidth = $("#item_width_"+index).val();
-			var nHeight = $("#item_height_"+index).val();
 
-			var style = "position: absolute; font-family: '"+font+"'; font-size: "+fontSize+"px; top: "+nRow+"%; left: "+nColumn+"%; width: "+nWidth+"px; height: "+nHeight+"px;";
-			var field_html = '<div class="added-item text-div" style="'+style+'">'+cData+'</div>';
+			var style = "display: none;";
+			var field_html = "<div class='added-item text-data' data-value='"+cData+"' style='"+style+"'>"+cData+"</div>";
 			return field_html;
 		}
 

@@ -57,6 +57,9 @@ body {
 	font-size: 12px;
 	color: red;
 }
+textarea {
+	width: 100%;
+}
 .size_4_6 {
 	width: 4in;
 	height: 6in;
