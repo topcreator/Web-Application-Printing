@@ -8,6 +8,11 @@
 	<script type="text/javascript" src="./js/jquery.min.js"></script>
 	<script type="text/javascript" src="./js/JsBarcode.min.js"></script>
 	<script type="text/javascript" src="./js/qrcode.min.js"></script>
+	<style media="print">
+		@page {
+			margin: 0;
+		}
+	</style>
 </head>
 <body>
 	<div id="paper_container" class="paper_container">
