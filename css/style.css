@@ -37,6 +37,7 @@ body {
 }
 #previewer {
 	border: none;
+	height: 0px;
 }
 .item input[type="text"] {
 	width: 30px;

@@ -11,176 +11,62 @@
 <body>
 	<div class="container">
 		<div class="header">
-			<form id="myform" name="myform">
-				<div class="formGroup">
-					<label>Size:</label>
-					<select id="paper_size" name="paper_size">
-						<option value="size_4_6">4*6</option>
-						<option value="size_8_12">8.5*12</option>
-						<option value="size_8_11">8.5*11</option>
-						<option value="size_4_3">4*3</option>
-					</select>
-				</div>
+			<form id="myform" name="myform" method="post" action="template.php" target="_blank">
 				<div class="buttonGroup">
-					<select id="new_item">
-						<option value="text">Add Text</option>
-						<option value="barcode_1">Add Barcode(1D)</option>
-						<option value="barcode_2">Add Barcode(2D)</option>
-						<option value="image">Add Image</option>
-					</select>
 					<button id="preview_btn" type="button">Preview</button>
 					<button id="print_btn" type="button">Print</button>
 				</div>
 				<div id="itemGroup">
 				</div>
 			</form>
-			
 		</div>
 		<div class="wrapper">
-			<iframe id="previewer" name="previewer" class="size_4_6" src="./template.html"></iframe>
+			<iframe id="previewer" name="previewer" src="./template.html"></iframe>
 		</div>
 	</div>
 	<script type="text/javascript">
 		var items = 0;
-		var passingData = '{"header":"U.S CERTIFICATE OF ORIGIN","data":[{"oFont":"12px arial", "nRow":0,"nColumn":0, "cData":"Text-12(0,0)"}, {"oFont":"14px arial", "nRow":25, "nColumn":25, "cData":"Text-14(25,25)"}, {"oFont":"16px arial", "nRow":50, "nColumn":50, "cData":"Text-16(50,50)"}, {"oFont":"18px arial", "nRow":75, "nColumn":75, "cData":"Text-18(75,75)"}], "footer":"X-PORT FORMS 1-(800) 345-1996"}';
+		var passingData = '{"size":{"nWidth":"8.5in", "nHeight":"12in"}, "header":"U.S CERTIFICATE OF ORIGIN","data":[{"oFont":"12px arial", "nRow":0,"nColumn":0, "cData":"Text-12(0,0)"}, {"oFont":"14px arial", "nRow":25, "nColumn":25, "cData":"Text-14(25,25)"}, {"oFont":"16px arial", "nRow":50, "nColumn":50, "cData":"Text-16(50,50)"}, {"oFont":"18px arial", "nRow":75, "nColumn":75, "cData":"Text-18(75,75)"}], "footer":"X-PORT FORMS 1-(800) 345-1996", "barcode1":[{"nRow":60, "nColumn":30, "nWidth":"100px", "nHeight":"50px", "cData":"234567890"}, {"nRow":60, "nColumn":60, "nWidth":"100px", "nHeight":"50px", "cData":"1568367890"}], "barcode2":[{"nRow":10, "nColumn":30, "nSize":"100", "cData":"fkvjmgwkei"}, {"nRow":10, "nColumn":60, "nSize":"100", "cData":"vjiwfekoagwleo"}]}';
 		$(document).ready(function() {
 			addNewText();
-			
-			$("#paper_size").on("change", function(){
-				updatePaperSize();
-			});
-
-			$("#new_item").on("change", function(){
-				var type = $(this).val();
-				switch (type) {
-					case "text":
-						addNewText();
-						break;
-					case "image":
-						addNewImage();
-						break;
-					case "barcode_1":
-						addBarcode1();
-						break;
-					case "barcode_2":
-						addBarcode2();
-						break;
-				}
-				$.validate();
-			});
+		
 
 			$("#preview_btn").on("click", function() {
 				var paper_html = "";
-				var size = $("#paper_size").val();
-				$("#previewer").removeAttr('class');
-				$("#previewer").addClass(size);
+				var datas = JSON.parse($("#item_data").val());
+				var size = datas.size;
+				$("#previewer").css({"width": size.nWidth, "height": size.nHeight});
 
-				$("#itemGroup .item").each(function(index){
-					var obj = $(this)
-					if (obj.hasClass("text")) {
-						paper_html += printText(index, obj);
-					} else if(obj.hasClass("barcode1")) {
-						paper_html += printBarcode(index, obj);
-					} else if(obj.hasClass("barcode2")) {
-						paper_html += printBarcode2(index, obj);
-					}
-					
-				});
+				paper_html += printText();
 				$("#previewer").contents().find(".added-item").remove();
 				$("#previewer").contents().find(".paper_wrapper").append(paper_html);
 				document.getElementById("previewer").contentWindow.updateComponents();
 			});
 
 			$("#print_btn").on("click", function(){
-				window.frames["previewer"].focus();
-				window.frames["previewer"].print();
+				var paper_html = "";
+				var datas = JSON.parse($("#item_data").val());
+				var size = datas.size;
+				$("#previewer").css({"width": size.nWidth, "height": size.nHeight});
+
+				paper_html += printText();
+				$("#previewer").contents().find(".added-item").remove();
+				$("#previewer").contents().find(".paper_wrapper").append(paper_html);
+				document.getElementById("previewer").contentWindow.updateComponents();
+				myform.submit();
 			})
 		});
 
-		function updatePaperSize() {
-			var size = $("#paper_size").val();
-			$("#previewer").removeAttr('class');
-			$("#previewer").addClass(size);
-			document.getElementById("previewer").contentWindow.updatePaperSize(size);
-		}
 
-		function addHeaderText() {
-			var item_html = "<div class='header-text'>";
-			item_html += "<div><label>Header:</label>";
-			item_html += "<input type='text' id='item_header' name='item_header' data-validation='required' /></div>";
-			item_html += "</div><hr>";
-			$("#itemGroup").append($(item_html));
-		}
-
-		function addFooterText() {
-			var item_html = "<div class='footer-text'>";
-			item_html += "<div><label>Footer:</label>";
-			item_html += "<input type='text' id='item_footer' name='item_footer' data-validation='required' /></div>";
-			item_html += "</div><hr>";
-			$("#itemGroup").append($(item_html));
-		}
 		function addNewText() {
 			var item_html = "<div class='item text'>";
 			item_html += "<div><label>Data:</label></div>";
-			item_html += "<div><textarea id='item_data_"+items+"' name='item_data_"+items+"' rows='20'>"+passingData+"</textarea></div>"
+			item_html += "<div><textarea id='item_data' name='item_data' rows='20'>"+passingData+"</textarea></div>"
 			item_html += "</div><hr>";
 			$("#itemGroup").append($(item_html));
-			items++;
 		}
-
-		function addNewImage() {
-			var item_html = "<div class='item image'>";
-			item_html += "<div><label>Row:</label>";
-			item_html += "<input type='text' name='item_row_"+items+"' id='item_row_"+items+"' data-validation='number' data-validation-allowing='range[0;100]' />";
-			item_html += "<label>Col:</label>";
-			item_html += "<input type='text' name='item_col_"+items+"' id='item_col_"+items+"' data-validation='number' data-validation-allowing='range[0;100]' /></div>";
-			item_html += "<div><label>Width:</label>";
-			item_html += "<input type='text' name='item_width_"+items+"' id='item_width_"+items+"' data-validation='number' />";
-			item_html += "<label>Height:</label>";
-			item_html += "<input type='text' name='item_height_"+items+"' id='item_height_"+items+"' data-validation='number' /></div>";
-			item_html += "<div><label>File:</label>";
-			item_html += "<input type='file' id='item_data_"+items+"' name='item_data_"+items+"' data-validation='required' /></div>";
-			item_html += "</div><hr>";
-			$("#itemGroup").append($(item_html));
-			items++;
-		}
-
-		function addBarcode1() {
-			var item_html = "<div class='item barcode1'>";
-			item_html += "<div><label>Row:</label>";
-			item_html += "<input type='text' name='item_row_"+items+"' id='item_row_"+items+"' data-validation='number' data-validation-allowing='range[0;100]' />";
-			item_html += "<label>Col:</label>";
-			item_html += "<input type='text' name='item_col_"+items+"' id='item_col_"+items+"' data-validation='number' data-validation-allowing='range[0;100]' /></div>";
-			item_html += "<div><label>Width:</label>";
-			item_html += "<input type='text' name='item_width_"+items+"' id='item_width_"+items+"' data-validation='number' />";
-			item_html += "<label>Height:</label>";
-			item_html += "<input type='text' name='item_height_"+items+"' id='item_height_"+items+"' data-validation='number' /></div>";
-			item_html += "<div><label>Barcode Value:</label>";
-			item_html += "<input type='text' id='item_data_"+items+"' name='item_data_"+items+"' data-validation='required' /></div>";
-			item_html += "</div><hr>";
-			$("#itemGroup").append($(item_html));
-			items++;
-		}
-
-		function addBarcode2() {
-			var item_html = "<div class='item barcode2'>";
-			item_html += "<div><label>Row:</label>";
-			item_html += "<input type='text' name='item_row_"+items+"' id='item_row_"+items+"' data-validation='number' data-validation-allowing='range[0;100]' />";
-			item_html += "<label>Col:</label>";
-			item_html += "<input type='text' name='item_col_"+items+"' id='item_col_"+items+"' data-validation='number' data-validation-allowing='range[0;100]' /></div>";
-			item_html += "<div><label>Width:</label>";
-			item_html += "<input type='text' name='item_width_"+items+"' id='item_width_"+items+"' data-validation='number' />";
-			item_html += "<label>Height:</label>";
-			item_html += "<input type='text' name='item_height_"+items+"' id='item_height_"+items+"' data-validation='number' /></div>";
-			item_html += "<div><label>Barcode Value:</label>";
-			item_html += "<input type='text' id='item_data_"+items+"' name='item_data_"+items+"' data-validation='required' /></div>";
-			item_html += "</div><hr>";
-			$("#itemGroup").append($(item_html));
-			items++;
-		}
-
-		function printText(index, item) {
-			var cData = $("#item_data_"+index).val();
+		function printText() {
+			var cData = $("#item_data").val();
 			if(!cData) return "";
 
 			var style = "display: none;";
@@ -188,32 +74,6 @@
 			return field_html;
 		}
 
-		function printBarcode(index, item) {
-			var nRow = $("#item_row_"+index).val();
-			var nColumn = $("#item_col_"+index).val();
-			var cData = $("#item_data_"+index).val();
-			if(!cData) return "";
-			var nWidth = $("#item_width_"+index).val();
-			var nHeight = $("#item_height_"+index).val();
-
-			var style = "position: absolute; top: "+nRow+"%; left: "+nColumn+"%;";
-			var svgStyle = "width: "+nWidth+"px; height: "+ nHeight+"px;";
-			var field_html = '<div style="'+style+'" class="added-item barcode1" data="'+cData+'"><svg id="item_barcode1_'+index+'" data-value="'+cData+'" style="'+svgStyle+'"></svg></div>';
-			return field_html;
-		}
-
-		function printBarcode2(index, item) {
-			var nRow = $("#item_row_"+index).val();
-			var nColumn = $("#item_col_"+index).val();
-			var cData = $("#item_data_"+index).val();
-			if(!cData) return "";
-			var nWidth = $("#item_width_"+index).val();
-			var nHeight = $("#item_height_"+index).val();
-
-			var style = "position: absolute; top: "+nRow+"%; left: "+nColumn+"%;";
-			var field_html = '<div style="'+style+'" class="added-item barcode2" data="'+cData+'"><div id="item_barcode2_'+index+'" data-value="'+cData+'" data-width="'+nWidth+'" data-height="'+nHeight+'"></div></div>';
-			return field_html;
-		}
 	</script>
 </body>
 </html>

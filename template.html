@@ -10,7 +10,7 @@
 	<script type="text/javascript" src="./js/qrcode.min.js"></script>
 </head>
 <body>
-	<div id="paper_container" class="paper_container size_4_6">
+	<div id="paper_container" class="paper_container">
 		<div class="paper_header">
 			<span class="title"></span>
 		</div>
@@ -21,15 +21,15 @@
 		</div>
 	</div>
 	<script type="text/javascript">
-		function updatePaperSize(size) {
-			$("#paper_container").removeAttr("class");
-			$("#paper_container").addClass("paper_container " + size);
-		}
 		function updateComponents() {
 			$(".text-data").each(function(){
 				var datas = $(this).data('value');
+				var size = datas.size;
+				$("#paper_container").css({"width": size.nWidth, "height": size.nHeight});
 				var header = datas.header;
 				var footer = datas.footer;
+				var barcode1 = datas.barcode1;
+				var barcode2 = datas.barcode2;
 				var data = datas.data;
 				$(".paper_header .title").html(header);
 				$(".paper_footer .title").html(footer);
@@ -44,28 +44,42 @@
 					var field_html = "<div class='added-item text-div' style='"+style+"'>"+cData+"</div>";
 					$(".paper_wrapper").append(field_html);
 				}
-			});
+				var m = barcode1.length;
+				for (var i = 0; i < m; i++) {
+					var nRow = barcode1[i].nRow;
+					var nColumn = barcode1[i].nColumn;
+					var nWidth = barcode1[i].nWidth;
+					var nHeight = barcode1[i].nHeight;
+					var cData = barcode1[i].cData;
+					var id = "item_barcode1_"+i;
+					var style = "position: absolute; top: "+nRow+"%; left: "+nColumn+"%;";
+					var svgStyle = "width: "+nWidth+"px; height: "+ nHeight+"px;";
+					var field_html = '<div style="'+style+'" class="added-item barcode1"><svg id="'+id+'" style="'+svgStyle+'"></svg></div>';
+					$(".paper_wrapper").append(field_html);
+					JsBarcode("#"+id, cData);
+					$("#"+id).css({ transform: 'rotate(-90deg)' });
+				}
+				var k = barcode2.length;
+				for (var i = 0; i < k; i++) {
+					var nRow = barcode2[i].nRow;
+					var nColumn = barcode2[i].nColumn;
+					var nSize = barcode2[i].nSize;
+					var cData = barcode2[i].cData;
+					var id = "item_barcode2_"+i;
+					var style = "position: absolute; top: "+nRow+"%; left: "+nColumn+"%;";
+					var field_html = '<div style="'+style+'" class="added-item barcode2" data="'+cData+'"><div id="'+id+'"></div></div>';
+					$(".paper_wrapper").append(field_html);
 
-			$(".barcode1 svg").each(function(){
-				var id = $(this).attr('id');
-				var value = $(this).data('value');
-				JsBarcode("#"+id, value);
+					var qrcode = new QRCode(id, {
+					    text: cData,
+					    width: nSize,
+					    height: nSize,
+					    colorDark : "#000000",
+					    colorLight : "#ffffff",
+					    correctLevel : QRCode.CorrectLevel.H
+					});
+				}
 			});
-
-			$(".barcode2 div").each(function(){
-				var id = $(this).attr('id');
-				var value = $(this).data('value');
-				var width = parseInt($(this).data('width'));
-				var height = parseInt($(this).data('height'));
-				var qrcode = new QRCode(id, {
-				    text: value,
-				    width: width,
-				    height: height,
-				    colorDark : "#000000",
-				    colorLight : "#ffffff",
-				    correctLevel : QRCode.CorrectLevel.H
-				});
-			})
 		}
 	</script>
 </body>
